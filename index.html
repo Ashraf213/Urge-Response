@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1f6e56">
+<title>Urge response template</title>
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #f7f6f2;
+    --card: #ffffff;
+    --border: #ddd9cf;
+    --text: #23221f;
+    --text-muted: #6b6a63;
+    --accent: #1f6e56;
+    --accent-text: #ffffff;
+    --danger: #a3341f;
+    --warn-bg: #fdf3e3;
+    --warn-border: #e8c98a;
+    --field-bg: #fbfaf7;
+    --emerg-bg: #1a1d22;
+    --emerg-card: #23272e;
+    --emerg-text: #f2f1ee;
+    --emerg-accent: #ff9f5a;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; }
+  body { height: 100%; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181a; --card: #202225; --border: #383a3e; --text: #ececec;
+      --text-muted: #a3a3a0; --accent: #4fb896; --accent-text: #0c1a16;
+      --danger: #e88073; --warn-bg: #2a2416; --warn-border: #5c4c22; --field-bg: #26282b;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181a; --card: #202225; --border: #383a3e; --text: #ececec;
+    --text-muted: #a3a3a0; --accent: #4fb896; --accent-text: #0c1a16;
+    --danger: #e88073; --warn-bg: #2a2416; --warn-border: #5c4c22; --field-bg: #26282b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.5;
+    padding: 1rem 1rem 3rem;
+    max-width: 640px;
+    margin-inline: auto;
+    transition: background 0.2s ease;
+  }
+  h1 { font-size: 1.25rem; font-weight: 600; margin: 0.25rem 0 0.25rem; }
+  h2 { font-size: 1rem; font-weight: 600; margin: 0 0 0.5rem; }
+  .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding-top: env(safe-area-inset-top, 0px); }
+  .mode-toggle {
+    background: var(--emerg-bg);
+    color: var(--emerg-text);
+    border: none;
+    border-radius: 999px;
+    padding: 0.55rem 1.1rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .quickref {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.25rem;
+  }
+  .quickref h2 { margin-bottom: 0.4rem; }
+  .quickref ol { margin: 0; padding-left: 1.2rem; font-size: 0.92rem; }
+  .quickref li { margin-bottom: 0.3rem; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; background: var(--accent); color: var(--accent-text);
+    border-radius: 50%; font-size: 0.78rem; font-weight: 600; margin-right: 0.5rem; flex-shrink: 0;
+  }
+  .step-title { display: flex; align-items: center; margin-bottom: 0.6rem; font-weight: 600; }
+  label { display: block; font-size: 0.85rem; color: var(--text-muted); margin: 0.6rem 0 0.25rem; }
+  label:first-of-type { margin-top: 0; }
+  input[type="text"], input[type="datetime-local"], textarea, select {
+    width: 100%; background: var(--field-bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); padding: 0.5rem 0.6rem; font-size: 0.95rem; font-family: inherit;
+  }
+  textarea { min-height: 3.2rem; resize: vertical; }
+  .checks { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.2rem; }
+  .chip {
+    display: flex; align-items: center; gap: 0.35rem; border: 1px solid var(--border);
+    border-radius: 999px; padding: 0.3rem 0.7rem; font-size: 0.85rem; cursor: pointer; background: var(--field-bg);
+  }
+  .chip input { margin: 0; }
+  .radiorow { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.2rem; }
+  .radiorow label.opt {
+    display: flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; color: var(--text); margin: 0;
+    border: 1px solid var(--border); border-radius: 999px; padding: 0.3rem 0.7rem; cursor: pointer; background: var(--field-bg);
+  }
+  button {
+    font-family: inherit; font-size: 0.9rem; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--field-bg); color: var(--text); padding: 0.55rem 0.9rem; cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  .btn-danger { color: var(--danger); border-color: var(--danger); background: transparent; }
+  .actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+  .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem; }
+  .entry { border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 0.85rem; margin-bottom: 0.6rem; font-size: 0.88rem; }
+  .entry-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.3rem; flex-wrap: wrap; }
+  .entry-date { color: var(--text-muted); font-size: 0.8rem; }
+  .tag { display: inline-block; font-size: 0.72rem; padding: 0.1rem 0.5rem; border-radius: 999px; font-weight: 600; }
+  .tag-resisted { background: #d9ecdf; color: #1f6e3f; }
+  .tag-relapsed { background: #f4d9d5; color: #96382a; }
+  .tag-emergency { background: #3a2e1a; color: #ffb877; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .tag-resisted { background: #1f3a28; color: #7fd39a; }
+    :root:not([data-theme="light"]) .tag-relapsed { background: #3a231f; color: #e8a599; }
+  }
+  :root[data-theme="dark"] .tag-resisted { background: #1f3a28; color: #7fd39a; }
+  :root[data-theme="dark"] .tag-relapsed { background: #3a231f; color: #e8a599; }
+  .empty { color: var(--text-muted); font-size: 0.88rem; font-style: italic; }
+  .toast {
+    position: fixed; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); left: 50%;
+    transform: translateX(-50%); background: var(--accent); color: var(--accent-text);
+    padding: 0.5rem 1rem; border-radius: 999px; font-size: 0.85rem; opacity: 0;
+    transition: opacity 0.25s ease; pointer-events: none; z-index: 50; max-width: 90%; text-align: center;
+  }
+  .toast.show { opacity: 1; }
+  .error-text { color: var(--danger); font-size: 0.8rem; margin-top: 0.25rem; display: none; }
+
+  /* ---------- Emergency mode ---------- */
+  body.emergency { background: var(--emerg-bg); color: var(--emerg-text); }
+  body.emergency .full-only { display: none !important; }
+  body:not(.emergency) .emergency-only { display: none !important; }
+  body.emergency .mode-toggle { background: var(--emerg-accent); color: #1a1200; }
+  .emerg-card {
+    background: var(--emerg-card); border: 1px solid #3a3f47; border-radius: 16px;
+    padding: 1.1rem; margin-bottom: 1rem;
+  }
+  .emerg-step-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.7rem; color: var(--emerg-accent); }
+  .big-btn {
+    width: 100%; display: block; text-align: left; font-size: 1.05rem; font-weight: 600;
+    padding: 1rem 1.1rem; border-radius: 12px; border: 1px solid #3a3f47; background: #2b3037;
+    color: var(--emerg-text); margin-bottom: 0.6rem; cursor: pointer;
+  }
+  .big-btn.selected { background: var(--emerg-accent); color: #1a1200; border-color: var(--emerg-accent); }
+  .big-btn.done { background: #234a36; border-color: #2f6a4c; }
+  .breathe-display {
+    text-align: center; font-size: 1.3rem; font-weight: 700; padding: 1.6rem 0; color: var(--emerg-accent);
+  }
+  .breathe-sub { text-align: center; font-size: 0.85rem; color: #b7bcc4; margin-top: -0.6rem; margin-bottom: 0.6rem; }
+  .save-emerg-btn {
+    width: 100%; padding: 1.1rem; font-size: 1.1rem; font-weight: 700; border-radius: 12px;
+    background: var(--emerg-accent); color: #1a1200; border: none; margin-top: 0.5rem;
+  }
+  .exit-emerg-btn {
+    width: 100%; padding: 0.7rem; font-size: 0.9rem; border-radius: 10px; background: transparent;
+    color: #b7bcc4; border: 1px solid #3a3f47; margin-top: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1 style="margin:0;">Urge response template</h1>
+  <button class="mode-toggle" id="modeToggle">Emergency mode</button>
+</div>
+<div class="subtitle full-only">Disrupt → Identify → Select → Execute → Recheck → Log</div>
+<div class="subtitle emergency-only" style="color:#b7bcc4;">Minimal night-time version. Fill in details later.</div>
+
+<!-- ============ FULL MODE ============ -->
+<div class="full-only">
+
+<div class="quickref">
+  <h2>Quick reference — do this first</h2>
+  <ol>
+    <li><strong>Disrupt:</strong> leave the environment. Box breathing (4 in / 4 hold / 4 out / 4 hold) for 60-90 seconds.</li>
+    <li><strong>Identify:</strong> is this a place/situation I've used PMO in before? HALT scan. What am I trying to solve?</li>
+    <li><strong>Select:</strong> pick an alternative from the list below (don't invent one now).</li>
+    <li><strong>Execute</strong> it.</li>
+    <li><strong>Recheck</strong> after 15-20 min — still strong? Repeat with a different alternative, or reach out.</li>
+  </ol>
+</div>
+
+<div class="card">
+  <div class="step-title"><span class="step-num">1</span>Disrupt</div>
+  <div class="checks">
+    <label class="chip"><input type="checkbox" id="d1"> Left the environment</label>
+    <label class="chip"><input type="checkbox" id="d2"> Box breathing done (60-90s)</label>
+  </div>
+</div>
+
+<div class="card">
+  <div class="step-title"><span class="step-num">2</span>Identify</div>
+  <label>Is this a place/situation I've used PMO in before?</label>
+  <div class="radiorow" id="cueGroup">
+    <label class="opt"><input type="radio" name="cue" value="Yes"> Yes</label>
+    <label class="opt"><input type="radio" name="cue" value="No"> No</label>
+    <label class="opt"><input type="radio" name="cue" value="Not sure"> Not sure</label>
+  </div>
+  <label>HALT scan (check any that apply)</label>
+  <div class="checks">
+    <label class="chip"><input type="checkbox" value="Hungry" class="halt"> Hungry</label>
+    <label class="chip"><input type="checkbox" value="Angry" class="halt"> Angry</label>
+    <label class="chip"><input type="checkbox" value="Lonely" class="halt"> Lonely</label>
+    <label class="chip"><input type="checkbox" value="Tired" class="halt"> Tired</label>
+    <label class="chip"><input type="checkbox" value="Just desire" class="halt"> Just desire</label>
+  </div>
+  <label>What am I actually trying to solve or deal with right now?</label>
+  <textarea id="identifyNote" placeholder="e.g. stressed about tomorrow's exam / it's bedtime and this is the old cue / day 13, general spike"></textarea>
+</div>
+
+<div class="card">
+  <div class="step-title"><span class="step-num">3</span>Select an alternative</div>
+  <label>Trigger type</label>
+  <select id="triggerType">
+    <option value="">Choose a category...</option>
+    <option value="bed">Bed / sleep-onset</option>
+    <option value="study">Stress / studying</option>
+    <option value="spike">General day 11-16 spike</option>
+    <option value="other">Other</option>
+  </select>
+  <div id="altSuggestions" class="hint"></div>
+  <label>Alternative I'm choosing</label>
+  <input type="text" id="altChoice" placeholder="e.g. get out of bed, pushups at desk, call accountability partner">
+</div>
+
+<div class="card">
+  <div class="step-title"><span class="step-num">4</span>Execute</div>
+  <label class="chip" style="width:fit-content"><input type="checkbox" id="executed"> Done</label>
+</div>
+
+<div class="card">
+  <div class="step-title"><span class="step-num">5</span>Recheck (after 15-20 min)</div>
+  <div class="radiorow" id="recheckGroup">
+    <label class="opt"><input type="radio" name="recheck" value="Urge faded"> Urge faded</label>
+    <label class="opt"><input type="radio" name="recheck" value="Still strong - repeated with new alternative"> Still strong — repeated</label>
+    <label class="opt"><input type="radio" name="recheck" value="Reached out to accountability contact"> Reached out</label>
+  </div>
+</div>
+
+<div class="card">
+  <div class="step-title"><span class="step-num">6</span>Log outcome</div>
+  <label>Outcome</label>
+  <div class="radiorow" id="outcomeGroup">
+    <label class="opt"><input type="radio" name="outcome" value="Resisted"> Resisted</label>
+    <label class="opt"><input type="radio" name="outcome" value="Relapsed"> Relapsed</label>
+  </div>
+  <div class="error-text" id="outcomeError">Select an outcome before saving.</div>
+  <label>Notes</label>
+  <textarea id="finalNotes" placeholder="Anything worth remembering for next time"></textarea>
+</div>
+
+<div class="actions">
+  <button class="btn-primary" id="saveBtn">Save entry</button>
+  <button id="clearFormBtn">Clear form</button>
+</div>
+
+</div>
+<!-- ============ END FULL MODE ============ -->
+
+
+<!-- ============ EMERGENCY MODE ============ -->
+<div class="emergency-only">
+
+  <div class="emerg-card">
+    <div class="emerg-step-title">1 · Get out</div>
+    <button class="big-btn" id="eLeft" data-key="eLeft">I've left the bed / room</button>
+  </div>
+
+  <div class="emerg-card">
+    <div class="emerg-step-title">2 · Breathe (60-90s)</div>
+    <div class="breathe-display" id="breatheText">Ready</div>
+    <div class="breathe-sub" id="breatheSub">Tap start — in 4, hold 4, out 4, hold 4</div>
+    <button class="big-btn" id="breatheBtn">Start breathing timer</button>
+  </div>
+
+  <div class="emerg-card">
+    <div class="emerg-step-title">3 · Pick one now</div>
+    <button class="big-btn alt-btn" data-alt="Cold water on face">Cold water on face</button>
+    <button class="big-btn alt-btn" data-alt="Sit somewhere else a few minutes">Sit somewhere else</button>
+    <button class="big-btn alt-btn" data-alt="Quiet prayer / dhikr">Quiet prayer / dhikr</button>
+    <button class="big-btn alt-btn" data-alt="Text accountability contact">Text accountability contact</button>
+  </div>
+
+  <div class="emerg-card">
+    <div class="emerg-step-title">4 · Outcome</div>
+    <button class="big-btn outcome-btn" data-outcome="Resisted">Urge faded — resisted</button>
+    <button class="big-btn outcome-btn" data-outcome="Relapsed">Relapsed</button>
+  </div>
+
+  <button class="save-emerg-btn" id="saveEmergBtn">Save & go back to sleep</button>
+  <div class="hint emergency-only" style="text-align:center; color:#b7bcc4;">You can add full details tomorrow morning from History.</div>
+</div>
+<!-- ============ END EMERGENCY MODE ============ -->
+
+
+<div class="card" style="margin-top:1.5rem;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.5rem;">
+    <h2 style="margin:0;">History</h2>
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+      <button id="copyBtn" style="font-size:0.78rem; padding:0.35rem 0.6rem;">Copy as text</button>
+      <button id="exportJsonBtn" style="font-size:0.78rem; padding:0.35rem 0.6rem;">Export JSON</button>
+      <button id="exportCsvBtn" style="font-size:0.78rem; padding:0.35rem 0.6rem;">Export CSV</button>
+    </div>
+  </div>
+  <div class="hint" id="exportHint"></div>
+  <div id="historyList"><div class="empty">No entries yet.</div></div>
+</div>
+
+<div class="hint full-only" style="text-align:center; margin-top:1rem;">
+  Tip: open this saved HTML file in your phone's browser, then use the browser's "Add to Home Screen" (Safari) or "Install app" (Chrome) option to launch it like an app. Your data stays on this device.
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'urge_response_entries_v1';
+
+const suggestions = {
+  bed: 'Get out of bed entirely. Go to another room, brief prayer or stretch, return only once genuinely sleepy.',
+  study: 'Pushups/brisk walk (60-90s), then box breathing at the desk, then resume studying.',
+  spike: 'Intense short exercise burst, or call a friend/accountability contact, or a change of room + task switch.',
+  other: 'Pick whatever has worked before, or contact your accountability person.'
+};
+
+function $(id) { return document.getElementById(id); }
+
+/* ---------- Mode toggle ---------- */
+const modeToggle = $('modeToggle');
+function setEmergency(on) {
+  document.body.classList.toggle('emergency', on);
+  modeToggle.textContent = on ? 'Exit emergency mode' : 'Emergency mode';
+}
+modeToggle.addEventListener('click', () => {
+  setEmergency(!document.body.classList.contains('emergency'));
+});
+
+/* ---------- Full mode: trigger suggestions ---------- */
+if ($('triggerType')) {
+  $('triggerType').addEventListener('change', function() {
+    const v = this.value;
+    $('altSuggestions').textContent = v && suggestions[v] ? 'Suggestion: ' + suggestions[v] : '';
+  });
+}
+
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------- Storage ---------- */
+function loadEntries() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+function saveEntries(entries) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    return true;
+  } catch (e) { return false; }
+}
+
+function renderHistory() {
+  const entries = loadEntries();
+  const container = $('historyList');
+  if (!entries.length) {
+    container.innerHTML = '<div class="empty">No entries yet.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  entries.slice().reverse().forEach((e, revIdx) => {
+    const idx = entries.length - 1 - revIdx;
+    const div = document.createElement('div');
+    div.className = 'entry';
+    const tagClass = e.outcome === 'Resisted' ? 'tag-resisted' : 'tag-relapsed';
+    const modeTag = e.mode === 'emergency' ? '<span class="tag tag-emergency">Emergency</span> ' : '';
+    div.innerHTML = `
+      <div class="entry-top">
+        <span class="entry-date">${e.date}</span>
+        <span>${modeTag}<span class="tag ${tagClass}">${e.outcome}</span></span>
+      </div>
+      <div><strong>Cue match:</strong> ${e.cue || '-'} · <strong>HALT:</strong> ${(e.halt || []).length ? e.halt.join(', ') : '-'}</div>
+      <div><strong>Trying to solve:</strong> ${e.identifyNote || '-'}</div>
+      <div><strong>Alternative used:</strong> ${e.altChoice || '-'} ${e.triggerType ? '(' + e.triggerType + ')' : ''}</div>
+      <div><strong>Recheck:</strong> ${e.recheck || '-'}</div>
+      <div><strong>Notes:</strong> ${e.finalNotes || '-'}</div>
+      <div class="actions" style="margin-top:0.5rem;">
+        <button class="btn-danger delEntry" data-idx="${idx}" style="font-size:0.78rem; padding:0.25rem 0.6rem;">Delete</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  container.querySelectorAll('.delEntry').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const i = parseInt(this.dataset.idx, 10);
+      const entries = loadEntries();
+      entries.splice(i, 1);
+      saveEntries(entries);
+      renderHistory();
+    });
+  });
+}
+
+/* ---------- Full mode form ---------- */
+function clearForm() {
+  document.querySelectorAll('.full-only input[type="checkbox"]').forEach(c => c.checked = false);
+  document.querySelectorAll('.full-only input[type="radio"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.full-only textarea').forEach(t => t.value = '');
+  if ($('triggerType')) $('triggerType').value = '';
+  if ($('altChoice')) $('altChoice').value = '';
+  if ($('altSuggestions')) $('altSuggestions').textContent = '';
+  $('outcomeError').style.display = 'none';
+}
+if ($('clearFormBtn')) $('clearFormBtn').addEventListener('click', clearForm);
+
+if ($('saveBtn')) $('saveBtn').addEventListener('click', function() {
+  const outcomeEl = document.querySelector('input[name="outcome"]:checked');
+  if (!outcomeEl) {
+    $('outcomeError').style.display = 'block';
+    return;
+  }
+  $('outcomeError').style.display = 'none';
+
+  const cueEl = document.querySelector('input[name="cue"]:checked');
+  const recheckEl = document.querySelector('input[name="recheck"]:checked');
+  const haltVals = Array.from(document.querySelectorAll('.halt:checked')).map(c => c.value);
+
+  const entry = {
+    mode: 'full',
+    date: new Date().toLocaleString(),
+    disrupted: $('d1').checked && $('d2').checked,
+    cue: cueEl ? cueEl.value : '',
+    halt: haltVals,
+    identifyNote: $('identifyNote').value.trim(),
+    triggerType: $('triggerType').value,
+    altChoice: $('altChoice').value.trim(),
+    executed: $('executed').checked,
+    recheck: recheckEl ? recheckEl.value : '',
+    outcome: outcomeEl.value,
+    finalNotes: $('finalNotes').value.trim()
+  };
+
+  const entries = loadEntries();
+  entries.push(entry);
+  const ok = saveEntries(entries);
+  renderHistory();
+  clearForm();
+  showToast(ok ? 'Entry saved' : 'Could not save (storage unavailable)');
+});
+
+/* ---------- Emergency mode ---------- */
+let emergState = { left: false, breathed: false, alt: '', outcome: '' };
+
+$('eLeft').addEventListener('click', function() {
+  emergState.left = !emergState.left;
+  this.classList.toggle('done', emergState.left);
+  this.textContent = emergState.left ? "Left the bed / room ✓" : "I've left the bed / room";
+});
+
+const breathPhases = ['Breathe in', 'Hold', 'Breathe out', 'Hold'];
+let breathTimer = null;
+$('breatheBtn').addEventListener('click', function() {
+  if (breathTimer) {
+    clearInterval(breathTimer);
+    breathTimer = null;
+    $('breatheText').textContent = 'Ready';
+    $('breatheSub').textContent = 'Tap start — in 4, hold 4, out 4, hold 4';
+    this.textContent = 'Start breathing timer';
+    return;
+  }
+  let phase = 0;
+  let elapsed = 0;
+  const totalSeconds = 84;
+  $('breatheText').textContent = breathPhases[0];
+  this.textContent = 'Stop timer';
+  breathTimer = setInterval(() => {
+    phase = (phase + 1) % 4;
+    $('breatheText').textContent = breathPhases[phase];
+    elapsed += 4;
+    $('breatheSub').textContent = Math.max(totalSeconds - elapsed, 0) + 's left';
+    if (elapsed >= totalSeconds) {
+      clearInterval(breathTimer);
+      breathTimer = null;
+      emergState.breathed = true;
+      $('breatheText').textContent = 'Done ✓';
+      $('breatheSub').textContent = '';
+      $('breatheBtn').textContent = 'Start breathing timer';
+      $('breatheBtn').classList.add('done');
+    }
+  }, 4000);
+}, false);
+
+document.querySelectorAll('.alt-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.alt-btn').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    emergState.alt = this.dataset.alt;
+  });
+});
+
+document.querySelectorAll('.outcome-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.outcome-btn').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    emergState.outcome = this.dataset.outcome;
+  });
+});
+
+$('saveEmergBtn').addEventListener('click', function() {
+  if (!emergState.outcome) {
+    showToast('Pick an outcome first');
+    return;
+  }
+  const entry = {
+    mode: 'emergency',
+    date: new Date().toLocaleString(),
+    disrupted: emergState.left,
+    cue: '',
+    halt: [],
+    identifyNote: '',
+    triggerType: '',
+    altChoice: emergState.alt,
+    executed: !!emergState.alt,
+    recheck: '',
+    outcome: emergState.outcome,
+    finalNotes: '(logged in emergency mode — add detail later if useful)'
+  };
+  const entries = loadEntries();
+  entries.push(entry);
+  const ok = saveEntries(entries);
+  renderHistory();
+  emergState = { left: false, breathed: false, alt: '', outcome: '' };
+  $('eLeft').classList.remove('done');
+  $('eLeft').textContent = "I've left the bed / room";
+  document.querySelectorAll('.alt-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.outcome-btn').forEach(b => b.classList.remove('selected'));
+  showToast(ok ? 'Saved — goodnight' : 'Could not save');
+});
+
+/* ---------- Copy as text ---------- */
+$('copyBtn').addEventListener('click', async function() {
+  const entries = loadEntries();
+  if (!entries.length) { showToast('No entries to copy'); return; }
+  const text = entries.map(e =>
+    `${e.date} | ${e.mode || 'full'} | ${e.outcome}\nCue match: ${e.cue || '-'} | HALT: ${(e.halt||[]).join(', ') || '-'}\nTrying to solve: ${e.identifyNote || '-'}\nAlternative: ${e.altChoice || '-'} (${e.triggerType || '-'})\nRecheck: ${e.recheck || '-'}\nNotes: ${e.finalNotes || '-'}\n`
+  ).join('\n---\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard');
+  } catch (e) {
+    showToast('Copy failed - select and copy manually');
+  }
+});
+
+/* ---------- Export via downloads capability ---------- */
+let downloadsCap = null;
+(async () => {
+  try {
+    if (window.claude && typeof window.claude.use === 'function') {
+      downloadsCap = await window.claude.use('downloads');
+    }
+  } catch (e) {
+    downloadsCap = null;
+  }
+  // No Claude runtime here (plain HTML file) — normal browser downloads work fine instead.
+})();
+
+function browserDownload(filename, data, mime) {
+  const blob = new Blob([data], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function toCsv(entries) {
+  const headers = ['date','mode','outcome','cue','halt','identifyNote','triggerType','altChoice','executed','recheck','finalNotes'];
+  const escape = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const rows = entries.map(e => headers.map(h => {
+    if (h === 'halt') return escape((e.halt || []).join('; '));
+    return escape(e[h]);
+  }).join(','));
+  return headers.join(',') + '\n' + rows.join('\n');
+}
+
+$('exportJsonBtn').addEventListener('click', async function() {
+  const entries = loadEntries();
+  if (!entries.length) { showToast('No entries to export'); return; }
+  const filename = 'urge_log_' + new Date().toISOString().slice(0,10) + '.json';
+  const data = JSON.stringify(entries, null, 2);
+  if (downloadsCap) {
+    try {
+      await downloadsCap.save({ filename, data });
+      showToast('Saved');
+    } catch (e) {
+      if (e && e.code === 'declined') { showToast('Save cancelled'); }
+      else { showToast('Could not export — try Copy as text'); }
+    }
+  } else {
+    browserDownload(filename, data, 'application/json');
+    showToast('Downloaded');
+  }
+});
+
+$('exportCsvBtn').addEventListener('click', async function() {
+  const entries = loadEntries();
+  if (!entries.length) { showToast('No entries to export'); return; }
+  const filename = 'urge_log_' + new Date().toISOString().slice(0,10) + '.csv';
+  const data = toCsv(entries);
+  if (downloadsCap) {
+    try {
+      await downloadsCap.save({ filename, data });
+      showToast('Saved');
+    } catch (e) {
+      if (e && e.code === 'declined') { showToast('Save cancelled'); }
+      else { showToast('Could not export — try Copy as text'); }
+    }
+  } else {
+    browserDownload(filename, data, 'text/csv');
+    showToast('Downloaded');
+  }
+});
+
+/* ---------- Home screen manifest (best-effort) ---------- */
+try {
+  const manifest = {
+    name: 'Urge Response Template',
+    short_name: 'UrgeHelper',
+    start_url: '.',
+    display: 'standalone',
+    background_color: '#f7f6f2',
+    theme_color: '#1f6e56'
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+} catch (e) {}
+
+renderHistory();
+</script>
+</body>
+</html>
